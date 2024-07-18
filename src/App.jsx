@@ -1,10 +1,11 @@
-import "./App.css";
-
+import Timer from "./components/Timer";
 function App() {
   return (
-    <div>
-      <div className="bg-teal-800 text-white">There{"'"}s will be timer</div>
-    </div>
+    <>
+      <div className="h-full bg-teal-800 text-white flex justify-center items-center">
+        <Timer />
+      </div>
+    </>
   );
 }
 

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import useNow from "../hooks/useNow";
+import UIButton from "./UI/UIButton";
 export default function Timer() {
   const [startAt, setStartAt] = useState();
   const [initialTimer, setInitialTimer] = useState(0);
   const [running, setRunning] = useState(false);
+  const [times, setTimes] = useState([]);
 
   const now = useNow(10, startAt);
   const timeFromStart = now - (startAt ?? now);
@@ -16,29 +18,34 @@ export default function Timer() {
       setStartAt(Date.now());
     }
   }, [startAt, timer]);
-
   const handleSpaceClick = useCallback(
     (event) => {
+      if (event.repeat) return;
+
       if (event.keyCode === 32) {
-        if (startAt) {
+        if (startAt && running) {
           setInitialTimer(timer);
           setStartAt();
+          setRunning(false);
+          setTimes((lastTimes) => [...lastTimes, timer]);
         } else {
+          setInitialTimer(0);
           setStartAt(Date.now());
+          setRunning(true);
         }
       }
     },
-    [startAt, timer]
+    [startAt, timer, running]
   );
-
   useEffect(() => {
     window.addEventListener("keydown", handleSpaceClick);
     return () => {
       window.removeEventListener("keydown", handleSpaceClick);
     };
   }, [handleSpaceClick]);
+
   return (
-    <div className="flex flex-col gap-3 items-center">
+    <div className="flex flex-col gap-3 items-center max-w-7xl">
       <div className="font-medium flex text-3xl gap-1">
         <span className="inline-block w-8">{format(timer).mins}</span>:
         <span className="inline-block w-8">{format(timer).secs}</span>.
@@ -46,19 +53,27 @@ export default function Timer() {
           {format(timer).ms}
         </span>
       </div>
-      <div className="flex gap-2">
-        <button
-          className="border border-green-300 bg-green-800 p-2 rounded-full w-24"
-          onClick={() => setInitialTimer(0)}
-        >
-          Restart
-        </button>
-        <button
-          className="border border-green-300 bg-green-800 p-2 rounded-full w-24"
-          onClick={toggleTimer}
-        >
+      <div className="flex gap-2 flex-wrap">
+        <UIButton onClick={() => setInitialTimer(0)}>Restart</UIButton>
+        <UIButton onClick={toggleTimer}>
           {startAt !== undefined ? "Stop" : timer === 0 ? "Start" : "Resume"}
-        </button>
+        </UIButton>
+      </div>
+      <div className="border bg-teal-900 border-green-300 p-5 rounded-2xl">
+        <h3 className="font-bold text-4xl text-center mb-5">TIMES</h3>
+        <div className="flex justify-center items-center gap-3 flex-wrap">
+          {times.length > 0 ? (
+            times.map((el, index) => {
+              return (
+                <UIButton key={index}>{`${format(el).mins}:${format(el).secs}:${
+                  format(el).ms
+                }`}</UIButton>
+              );
+            })
+          ) : (
+            <p className="text-center">EMPTY</p>
+          )}
+        </div>
       </div>
     </div>
   );

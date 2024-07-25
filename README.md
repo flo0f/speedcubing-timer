@@ -1,8 +1,17 @@
-# React + Vite
+# Простой таймер для спидкубинга
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Это мой первый проект на ReactJS.
+Так получилось, что два моих хобби это спидкубинг и программирование, поэтому я решил сделать свой таймер
+и главное - получить опыт разработки
 
-Currently, two official plugins are available:
+### Для чего был создан проект?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+В первую очередь этот проект нужен мне для получения опыта и закрепления изученного.
+
+### Как помочь продукту развиться?
+
+Написать мне в Telegram(указан в Readme профиля)
+
+### Кто разрабатывает продукт
+
+На данный момент только я

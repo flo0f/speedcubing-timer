@@ -1,10 +1,19 @@
 import clsx from "clsx";
-export default function UIButton({ className, onClick, children }) {
+export default function UIButton({
+  className,
+  onClick,
+  children,
+  disabled = true,
+}) {
   return (
     <button
+      disabled={disabled}
       className={clsx(
         className,
-        "border border-green-300 bg-green-800 px-4 py-2 rounded-full min-w-24"
+        disabled
+          ? "border-green-300 bg-green-800 opacity-20"
+          : "border-green-300 bg-green-800",
+        "border px-4 py-2 rounded-full min-w-24"
       )}
       onClick={onClick}
     >

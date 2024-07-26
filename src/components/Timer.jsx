@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import useNow from "../hooks/useNow";
 import UIButton from "./UI/UIButton";
-export default function Timer() {
+export default function Timer({ updScramble }) {
   const [startAt, setStartAt] = useState();
   const [initialTimer, setInitialTimer] = useState(0);
   const [running, setRunning] = useState(false);
   const [times, setTimes] = useState([]);
+  const [timeStyle, setTimeStyle] = useState({ color: "white" });
 
   const now = useNow(10, startAt);
   const timeFromStart = now - (startAt ?? now);
@@ -21,35 +22,44 @@ export default function Timer() {
   const handleSpaceClick = useCallback(
     (event) => {
       if (event.repeat) return;
-
       if (event.keyCode === 32) {
-        if (startAt && running) {
+        if (event.type === "keydown" && running) {
           setInitialTimer(timer);
           setStartAt();
           setRunning(false);
           setTimes((lastTimes) => [...lastTimes, timer]);
-        } else {
+          updScramble();
+        } else if (event.type === "keydown" && !running) {
+          if (initialTimer) {
+            setInitialTimer(0);
+          }
+          setTimeStyle({ color: "tomato" });
+        } else if (event.type === "keyup" && !running && !timer) {
+          setTimeStyle({ color: "white" });
           setInitialTimer(0);
           setStartAt(Date.now());
           setRunning(true);
         }
       }
     },
-    [startAt, timer, running]
+    [timer, running, updScramble, initialTimer]
   );
+
   useEffect(() => {
     window.addEventListener("keydown", handleSpaceClick);
+    window.addEventListener("keyup", handleSpaceClick);
     return () => {
       window.removeEventListener("keydown", handleSpaceClick);
+      window.removeEventListener("keyup", handleSpaceClick);
     };
   }, [handleSpaceClick]);
 
   return (
     <div className="flex flex-col gap-3 items-center max-w-7xl">
-      <div className="font-medium flex text-3xl gap-1">
-        <span className="inline-block w-8">{format(timer).mins}</span>:
-        <span className="inline-block w-8">{format(timer).secs}</span>.
-        <span className="inline-block w-5 text-xl underline">
+      <div className="font-medium flex text-5xl " style={timeStyle}>
+        <span className="inline-block min-w-7">{format(timer).mins}</span>:
+        <span className="inline-block min-w-7">{format(timer).secs}</span>.
+        <span className="inline-block min-w-7 text-xl underline">
           {format(timer).ms}
         </span>
       </div>
@@ -65,9 +75,9 @@ export default function Timer() {
           {times.length > 0 ? (
             times.map((el, index) => {
               return (
-                <UIButton key={index}>{`${format(el).mins}:${format(el).secs}:${
-                  format(el).ms
-                }`}</UIButton>
+                <UIButton disabled={false} key={index}>{`${index + 1}. ${
+                  format(el).mins
+                }:${format(el).secs}:${format(el).ms}`}</UIButton>
               );
             })
           ) : (

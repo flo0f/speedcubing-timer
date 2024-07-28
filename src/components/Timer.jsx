@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import useNow from "../hooks/useNow";
 import UIButton from "./UI/UIButton";
-export default function Timer({ updScramble }) {
+export default function Timer({
+  scramble,
+  updScramble,
+  setActive,
+  setModalChild,
+}) {
   const [startAt, setStartAt] = useState();
   const [initialTimer, setInitialTimer] = useState(0);
   const [running, setRunning] = useState(false);
@@ -11,6 +16,7 @@ export default function Timer({ updScramble }) {
   const now = useNow(10, startAt);
   const timeFromStart = now - (startAt ?? now);
   const timer = timeFromStart + initialTimer;
+
   const toggleTimer = useCallback(() => {
     if (startAt) {
       setInitialTimer(timer);
@@ -19,6 +25,7 @@ export default function Timer({ updScramble }) {
       setStartAt(Date.now());
     }
   }, [startAt, timer]);
+
   const handleSpaceClick = useCallback(
     (event) => {
       if (event.repeat) return;
@@ -27,13 +34,16 @@ export default function Timer({ updScramble }) {
           setInitialTimer(timer);
           setStartAt();
           setRunning(false);
-          setTimes((lastTimes) => [...lastTimes, timer]);
+          setTimes((lastTimes) => [
+            ...lastTimes,
+            { time: timer, scramble: scramble },
+          ]);
           updScramble();
         } else if (event.type === "keydown" && !running) {
           if (initialTimer) {
             setInitialTimer(0);
           }
-          setTimeStyle({ color: "tomato" });
+          setTimeStyle({ color: "rgb(134 239 172)" });
         } else if (event.type === "keyup" && !running && !timer) {
           setTimeStyle({ color: "white" });
           setInitialTimer(0);
@@ -42,7 +52,7 @@ export default function Timer({ updScramble }) {
         }
       }
     },
-    [timer, running, updScramble, initialTimer]
+    [timer, running, updScramble, initialTimer, scramble]
   );
 
   useEffect(() => {
@@ -53,6 +63,27 @@ export default function Timer({ updScramble }) {
       window.removeEventListener("keyup", handleSpaceClick);
     };
   }, [handleSpaceClick]);
+
+  function solveInfo(index, scramble, time) {
+    return (
+      <div>
+        <div className="font-bold">
+          Solve <span className="text-green-300">№{index + 1}</span>
+        </div>
+        <div>
+          Scramble: <span className="text-green-300">{scramble}</span>
+        </div>
+        <div>
+          Time:
+          <span className="text-green-300">
+            {format(time).mins > 0
+              ? ` ${format(time).mins}:${format(time).secs}.${format(time).ms}`
+              : ` ${format(time).secs}.${format(time).ms}`}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 items-center max-w-7xl">
@@ -69,19 +100,31 @@ export default function Timer({ updScramble }) {
           {startAt !== undefined ? "Stop" : timer === 0 ? "Start" : "Resume"}
         </UIButton>
       </div>
-      <div className="border bg-teal-900 border-green-300 p-5 rounded-2xl">
-        <h3 className="font-bold text-4xl text-center mb-5">TIMES</h3>
+      <div className="border bg-teal-900 border-green-300 p-5 rounded-lg">
+        <h3 className="font-bold text-4xl text-center mb-5">Solves</h3>
         <div className="flex justify-center items-center gap-3 flex-wrap">
           {times.length > 0 ? (
             times.map((el, index) => {
               return (
-                <UIButton disabled={false} key={index}>{`${index + 1}. ${
-                  format(el).mins
-                }:${format(el).secs}:${format(el).ms}`}</UIButton>
+                <UIButton
+                  disabled={false}
+                  key={index}
+                  onClick={() => {
+                    setActive(true);
+                    setModalChild(solveInfo(index, el.scramble, el.time));
+                  }}
+                >
+                  <span className="font-semibold">{`${index + 1}) `}</span>
+                  {format(el.time).mins > 0
+                    ? `${format(el.time).mins}:${format(el.time).secs}.${
+                        format(el.time).ms
+                      }`
+                    : `${format(el.time).secs}.${format(el.time).ms}`}
+                </UIButton>
               );
             })
           ) : (
-            <p className="text-center">EMPTY</p>
+            <p className="text-center">no solves</p>
           )}
         </div>
       </div>

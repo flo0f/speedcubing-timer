@@ -14,9 +14,9 @@ function App() {
   return (
     <>
       <div className="h-full bg-teal-800 text-white flex flex-col items-center">
-        <Scramble scramble={scramble.join(" ")} updScramble={updScramble} />
+        <Scramble scramble={scramble} updScramble={updScramble} />
         <Timer
-          scramble={scramble.join(" ")}
+          scramble={scramble}
           updScramble={updScramble}
           setActive={setModalActive}
           setModalChild={setModalChild}

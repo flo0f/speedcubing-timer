@@ -19,5 +19,5 @@ export default function ScrambleGenerator() {
     direction = random(DIRECTIONS, direction);
     scramble[i] = random(direction) + random(TIMES);
   }
-  return scramble;
+  return scramble.join(" ");
 }

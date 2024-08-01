@@ -17,15 +17,6 @@ export default function Timer({
   const timeFromStart = now - (startAt ?? now);
   const timer = timeFromStart + initialTimer;
 
-  const toggleTimer = useCallback(() => {
-    if (startAt) {
-      setInitialTimer(timer);
-      setStartAt();
-    } else {
-      setStartAt(Date.now());
-    }
-  }, [startAt, timer]);
-
   const handleSpaceClick = useCallback(
     (event) => {
       if (event.repeat) return;
@@ -93,12 +84,6 @@ export default function Timer({
         <span className="inline-block min-w-7 text-xl underline">
           {format(timer).ms}
         </span>
-      </div>
-      <div className="flex gap-2 flex-wrap">
-        <UIButton onClick={() => setInitialTimer(0)}>Restart</UIButton>
-        <UIButton onClick={toggleTimer}>
-          {startAt !== undefined ? "Stop" : timer === 0 ? "Start" : "Resume"}
-        </UIButton>
       </div>
       <div className="border bg-teal-900 border-green-300 p-5 rounded-lg">
         <h3 className="font-bold text-4xl text-center mb-5">Solves</h3>

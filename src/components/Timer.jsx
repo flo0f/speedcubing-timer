@@ -28,8 +28,8 @@ export default function Timer({
           setStartAt();
           setRunning(false);
           setTimes((lastTimes) => [
-            ...lastTimes,
             { time: timer, scramble: scramble },
+            ...lastTimes,
           ]);
           updScramble();
         } else if (event.type === "keydown" && !running) {
@@ -90,7 +90,7 @@ export default function Timer({
               times.map((el, index) => {
                 return (
                   <UIButton
-                    className={"w-full overflow-hidden flex h-fit mb-3"}
+                    className={`w-full overflow-hidden flex h-fit mb-3`}
                     disabled={false}
                     key={index}
                     onClick={() => {
@@ -99,7 +99,7 @@ export default function Timer({
                     }}
                   >
                     <span className="font-semibold relative after:w-px after:h-9 after:bg-green-300 after:ml-1.5 after:absolute after:-top-2 inline-block w-fit mx-3">{`${
-                      index + 1
+                      times.length - index
                     } `}</span>
                     {format(el.time).mins > 0
                       ? `${format(el.time).mins}:${format(el.time).secs}.${

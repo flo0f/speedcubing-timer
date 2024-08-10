@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import useNow from "../hooks/useNow";
 import UIButton from "./UI/UIButton";
+import clsx from "clsx";
 export default function Timer({
   scramble,
   updScramble,
   setActive,
   setModalChild,
+  className,
 }) {
   const [startAt, setStartAt] = useState();
   const [initialTimer, setInitialTimer] = useState(0);
@@ -55,7 +57,7 @@ export default function Timer({
     };
   }, [handleSpaceClick]);
 
-  function solveInfo(index, scramble, time) {
+  function getSolveInfo(index, scramble, time) {
     return (
       <div>
         <div className="font-bold">
@@ -77,41 +79,51 @@ export default function Timer({
   }
 
   return (
-    <div className="flex flex-col gap-3 items-center max-w-7xl">
-      <div className="font-medium flex text-5xl " style={timeStyle}>
+    <div className={clsx(className, "flex gap-3 items-center w-full")}>
+      <div className="flex flex-wrap justify-center gap-3 w-2/12 h-full">
+        <div className="border bg-teal-900 border-green-300 p-5 rounded-lg w-full h-1/3">
+          STATS HERE
+        </div>
+        <div className="w-full h-2/3">
+          <div className="border bg-teal-900 border-green-300 p-5 rounded-lg h-full overflow-auto">
+            {times.length > 0 ? (
+              times.map((el, index) => {
+                return (
+                  <UIButton
+                    className={"w-full overflow-hidden flex h-fit mb-3"}
+                    disabled={false}
+                    key={index}
+                    onClick={() => {
+                      setActive(true);
+                      setModalChild(getSolveInfo(index, el.scramble, el.time));
+                    }}
+                  >
+                    <span className="font-semibold relative after:w-px after:h-9 after:bg-green-300 after:ml-1.5 after:absolute after:-top-2 inline-block w-fit mx-3">{`${
+                      index + 1
+                    } `}</span>
+                    {format(el.time).mins > 0
+                      ? `${format(el.time).mins}:${format(el.time).secs}.${
+                          format(el.time).ms
+                        }`
+                      : `${format(el.time).secs}.${format(el.time).ms}`}
+                  </UIButton>
+                );
+              })
+            ) : (
+              <p className="text-center">no solves</p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div
+        className="font-medium flex items-center justify-center text-5xl w-10/12"
+        style={timeStyle}
+      >
         <span className="inline-block min-w-7">{format(timer).mins}</span>:
         <span className="inline-block min-w-7">{format(timer).secs}</span>.
         <span className="inline-block min-w-7 text-xl underline">
           {format(timer).ms}
         </span>
-      </div>
-      <div className="border bg-teal-900 border-green-300 p-5 rounded-lg">
-        <h3 className="font-bold text-4xl text-center mb-5">Solves</h3>
-        <div className="flex justify-center items-center gap-3 flex-wrap">
-          {times.length > 0 ? (
-            times.map((el, index) => {
-              return (
-                <UIButton
-                  disabled={false}
-                  key={index}
-                  onClick={() => {
-                    setActive(true);
-                    setModalChild(solveInfo(index, el.scramble, el.time));
-                  }}
-                >
-                  <span className="font-semibold">{`${index + 1}) `}</span>
-                  {format(el.time).mins > 0
-                    ? `${format(el.time).mins}:${format(el.time).secs}.${
-                        format(el.time).ms
-                      }`
-                    : `${format(el.time).secs}.${format(el.time).ms}`}
-                </UIButton>
-              );
-            })
-          ) : (
-            <p className="text-center">no solves</p>
-          )}
-        </div>
       </div>
     </div>
   );

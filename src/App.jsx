@@ -14,8 +14,13 @@ function App() {
   return (
     <>
       <div className="h-full bg-teal-800 text-white flex flex-col items-center">
-        <Scramble scramble={scramble} updScramble={updScramble} />
+        <Scramble
+          className="h-[10%]"
+          scramble={scramble}
+          updScramble={updScramble}
+        />
         <Timer
+          className="h-[80%]"
           scramble={scramble}
           updScramble={updScramble}
           setActive={setModalActive}

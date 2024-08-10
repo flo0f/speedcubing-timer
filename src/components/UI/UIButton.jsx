@@ -13,7 +13,7 @@ export default function UIButton({
         disabled
           ? "border-green-300 bg-green-800 opacity-20"
           : "border-green-300 bg-green-800",
-        "border px-3 py-1 rounded-lg min-w-24"
+        "border py-1 rounded-lg min-w-24"
       )}
       onClick={onClick}
     >

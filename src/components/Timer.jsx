@@ -95,7 +95,13 @@ export default function Timer({
                     key={index}
                     onClick={() => {
                       setActive(true);
-                      setModalChild(getSolveInfo(index, el.scramble, el.time));
+                      setModalChild(
+                        getSolveInfo(
+                          times.length - index - 1,
+                          el.scramble,
+                          el.time
+                        )
+                      );
                     }}
                   >
                     <span className="font-semibold relative after:w-px after:h-9 after:bg-green-300 after:ml-1.5 after:absolute after:-top-2 inline-block w-fit mx-3">{`${
